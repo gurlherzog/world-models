@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Possible Genealogy of World Models</title>
+<meta name="description" content="An attempt to create a genealogy and taxonomy of world models. A work in progress by Klara Kofen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg:        #0e0e0d;
+  --bg2:       #141412;
+  --bg3:       #1c1c19;
+  --bg4:       #242420;
+  --border:    rgba(255,255,255,0.07);
+  --border-md: rgba(255,255,255,0.14);
+  --border-hi: rgba(255,255,255,0.26);
+  --text:      #e8e6df;
+  --muted:     #7a7870;
+  --dim:       #4a4844;
+  --vdim:      #2e2c2a;
+  --rep:       #c8a96e;
+  --con:       #9b7fa6;
+  --par:       #7eb8a0;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --mono:  'DM Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ──────────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(14,14,13,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 1; }
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  padding-bottom: 2px;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active {
+  color: var(--text);
+  border-bottom: 0.5px solid var(--rep);
+}
+
+/* ── PAGE ──────────────────────────────────────────────────────── */
+.page {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 64px 36px 140px;
+}
+
+/* ── HEADER ────────────────────────────────────────────────────── */
+.page-header { margin-bottom: 52px; max-width: 780px; }
+
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 1.08;
+  color: var(--text);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.page-title em { font-style: italic; color: var(--muted); }
+
+.page-subtitle {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.9;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.page-description {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.9;
+  max-width: 640px;
+  border-left: 1.5px solid var(--border-md);
+  padding-left: 18px;
+}
+
+/* ── CONTROLS ──────────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.mode-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.mode-btn:hover { border-color: var(--border-md); color: var(--muted); }
+
+.mode-btn.is-all.on    { border-color: var(--border-md); color: var(--text); }
+.mode-btn.is-rep.on    { border-color: var(--rep); color: var(--rep); }
+.mode-btn.is-con.on    { border-color: var(--con); color: var(--con); }
+.mode-btn.is-par.on    { border-color: var(--par); color: var(--par); }
+
+.pip {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pip-all { background: var(--muted); }
+.pip-rep { background: var(--rep); }
+.pip-con { background: var(--con); }
+.pip-par { background: var(--par); }
+
+.cosmo-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.cosmo-btn:hover { border-color: var(--border-md); color: var(--muted); }
+.cosmo-btn.on { border-color: var(--border-hi); color: var(--text); }
+
+.entry-count {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+/* ── ENTRIES ────────────────────────────────────────────────────── */
+.entries { display: flex; flex-direction: column; gap: 4px; }
+
+.entry {
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+.entry:hover { border-color: var(--border-md); }
+.entry.open  { border-color: var(--border-md); }
+.entry.hidden { display: none; }
+
+.entry.mode-rep.open { border-color: rgba(200,169,110,0.4); }
+.entry.mode-con.open { border-color: rgba(155,127,166,0.4); }
+.entry.mode-par.open { border-color: rgba(126,184,160,0.4); }
+
+/* ── ENTRY HEAD ─────────────────────────────────────────────────── */
+.entry-head {
+  display: grid;
+  grid-template-columns: 3px 1fr auto;
+  min-height: 76px;
+}
+
+.entry-stripe { border-radius: 10px 0 0 0; }
+.mode-rep .entry-stripe { background: var(--rep); }
+.mode-con .entry-stripe { background: var(--con); }
+.mode-par .entry-stripe { background: var(--par); }
+.entry.open .entry-stripe { border-radius: 10px 0 0 0; }
+
+.entry-summary { padding: 16px 22px; }
+
+.entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.entry-period {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.07em;
+}
+
+.entry-mode-tag {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 0.5px solid;
+}
+.mode-rep .entry-mode-tag { color: var(--rep); border-color: rgba(200,169,110,0.45); }
+.mode-con .entry-mode-tag { color: var(--con); border-color: rgba(155,127,166,0.45); }
+.mode-par .entry-mode-tag { color: var(--par); border-color: rgba(126,184,160,0.45); }
+
+.cosmo-tag {
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 0.5px solid var(--border-md);
+  color: var(--muted);
+}
+.cosmo-tag.covert { color: var(--dim); font-style: italic; border-color: var(--border); }
+
+.entry-title {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 5px;
+}
+
+.entry-hook {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.entry-toggle {
+  padding: 16px 22px;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 20px;
+}
+.toggle-lbl {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  transition: color 0.18s;
+  white-space: nowrap;
+  user-select: none;
+}
+.entry.open .toggle-lbl { color: var(--muted); }
+
+/* ── ENTRY BODY ─────────────────────────────────────────────────── */
+.entry-body {
+  display: none;
+  border-top: 0.5px solid var(--border);
+}
+.entry.open .entry-body { display: block; }
+
+.param-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 0.5px solid var(--border);
+}
+.param-row:last-child { border-bottom: none; }
+.param-row.single { grid-template-columns: 1fr; }
+
+.param-cell {
+  padding: 20px 24px;
+  border-right: 0.5px solid var(--border);
+}
+.param-cell:last-child,
+.param-row.single .param-cell { border-right: none; }
+
+.param-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 9px;
+}
+
+.param-text {
+  font-size: 13px;
+  color: #9a9890;
+  line-height: 1.85;
+}
+.param-text em { font-style: italic; }
+.param-text strong { color: var(--text); font-weight: 400; }
+
+/* opacity bar */
+.op-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.op-lbl {
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  min-width: 44px;
+}
+.op-lbl:last-child { text-align: right; }
+.op-track {
+  flex: 1;
+  height: 2px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.op-fill {
+  height: 100%;
+  border-radius: 2px;
+  opacity: 0.75;
+}
+.mode-rep .op-fill { background: var(--rep); }
+.mode-con .op-fill { background: var(--con); }
+.mode-par .op-fill { background: var(--par); }
+
+/* companion reciprocal */
+.reciprocal {
+  font-size: 12px;
+  color: var(--dim);
+  font-style: italic;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--border);
+  line-height: 1.75;
+}
+.reciprocal::before { content: '↔  '; }
+
+/* cosmological cell */
+.cosmo-inner {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.cosmo-orb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0.5px solid var(--border-md);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--dim);
+}
+.cosmo-orb.lit {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+
+/* edge note */
+.edge {
+  font-size: 12px;
+  color: var(--dim);
+  font-style: italic;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-left: 1.5px solid var(--vdim);
+  line-height: 1.75;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────────── */
+footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 0.5px solid var(--border);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+footer a { color: var(--dim); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--muted); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  nav { padding: 0 16px; }
+  .nav-links { gap: 16px; }
+  .page { padding: 40px 16px 80px; }
+  .param-row { grid-template-columns: 1fr; }
+  .param-cell { border-right: none; border-bottom: 0.5px solid var(--border); }
+  .param-cell:last-child { border-bottom: none; }
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">World Models</a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">The Map</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Bibliography</a></li>
+    <li><a href="#">Contribute</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <header class="page-header">
+    <h1 class="page-title">A Possible <em>Genealogy</em> of World Models</h1>
+    <p class="page-subtitle">Filterable by ontological mode — ten entries, growing</p>
+    <p class="page-description">This is an attempt to create a genealogy and taxonomy of world models. It is a work in progress. Each entry is a specific, bounded world model — not a tradition or a period, but a nameable system — examined through seven parameters: its technologies of inscription, the political and economic interests that sustained it, its use case and application, its aesthetics, the companion model of the human it implies, its transparency or opacity, and its cosmological register.</p>
+  </header>
+
+  <div class="controls">
+    <div class="mode-filters" id="mode-filters">
+      <button class="mode-btn is-all on" data-mode="all"><span class="pip pip-all"></span>All</button>
+      <button class="mode-btn is-rep" data-mode="rep"><span class="pip pip-rep"></span>Representational</button>
+      <button class="mode-btn is-con" data-mode="con"><span class="pip pip-con"></span>Constitutive</button>
+      <button class="mode-btn is-par" data-mode="par"><span class="pip pip-par"></span>Participatory</button>
+    </div>
+    <button class="cosmo-btn" id="cosmo-btn">◎ &thinsp;Cosmological register only</button>
+  </div>
+
+  <div class="entry-count" id="entry-count"></div>
+  <div class="entries" id="entries"></div>
+
+  <footer>
+    <span>A living resource by Klara Kofen</span>
+    <span><a href="#">Contribute an entry →</a></span>
+  </footer>
+
+</div>
+
+<script>
+const DATA = [
+
+  // ── REPRESENTATIONAL ──────────────────────────────────────────
+
+  {
+    id: 'ptolemaic',
+    mode: 'rep', modeLabel: 'Representational',
+    title: 'Ptolemaic / medieval cosmological model',
+    period: 'Antiquity — c. 17th C',
+    hook: 'Nested spheres; divine geometry; the cosmos as moral argument',
+    cosmo: 'explicit',
+    cosmoNote: 'Cosmology first, world model second — answers why the world exists, what it asks of the human, and where the human stands within it.',
+    inscription: 'Armillary sphere; astrolabe; manuscript transmission; cathedral architecture as cosmogram; the ecclesiastical calendar as temporal model.',
+    interest: 'Church authority; dynastic legitimation; priestly interpretive monopoly over celestial prediction. The model\'s survival depends on institutional reproduction through the madrasa, the monastery, and the court astronomer.',
+    use: 'Navigation; liturgical calendar; moral order; astrological counsel to rulers; structuring of sacred space; adjudication of feast days and legal time.',
+    aesthetics: 'Nested crystalline orbs; the sacred diagram; Ptolemaic epicycle drawings; Dante\'s cosmological map as literary instantiation; illuminated manuscript as portable model; cathedral rose window as cosmogram.',
+    companion: 'The morally located subject — placed within a hierarchical cosmos that assigns rank, duty, and eschatological destiny. The human body mirrors the world: humours correspond to elements, organs to planets. Microcosm and macrocosm are structural analogues.',
+    reciprocal: null,
+    opacity: 15,
+    opNote: 'Opaque to non-initiates. Priests and astronomers hold interpretive monopoly through Latin, mathematics, and institutional access. The model is legible only to those trained within its reproducing institutions.',
+    edge: null
+  },
+
+  {
+    id: 'linnaeus',
+    mode: 'rep', modeLabel: 'Representational',
+    title: 'Linnaean taxonomy',
+    period: 'c. 1735 — ongoing (contested)',
+    hook: 'The great chain of being made systematic; nature as readable archive',
+    cosmo: null, cosmoNote: null,
+    inscription: 'Printed botanical and zoological catalogue; the herbarium; the specimen collection; global correspondence networks; the colonial botanical garden as data infrastructure.',
+    interest: 'European natural philosophy; imperial expansion requiring inventory of colonial territories and their resources; the legitimation of natural history as a professional discipline.',
+    use: 'Classification of living organisms; colonial resource inventory; naming rights as epistemic sovereignty; foundation for pharmaceutical, agricultural, and ecological science; legal frameworks for species protection.',
+    aesthetics: 'Copper-plate botanical engravings; the specimen pinned and labelled; the binomial name as aesthetic compression; the hierarchical table as visual argument; the herbarium sheet as world-in-miniature.',
+    companion: 'The observing, classifying, naming subject — rational, detached, positioned outside nature as its surveyor. The human is the taxonomist, not the taxonomised. This changes with Darwin: the human becomes a species among species, and the companion model is destabilised from within the tradition.',
+    reciprocal: null,
+    opacity: 40,
+    opNote: 'Moderately transparent — the system is explicitly designed to be learnable and reproducible. But access requires institutional training, European languages, and proximity to specimen collections concentrated in imperial centres. Non-Western classification systems are absorbed or displaced without attribution.',
+    edge: 'Sits at the boundary between representational and constitutive: Linnaeus claims to describe nature, but the act of naming and classifying produces the nature that colonial administration then governs. The category makes the resource.'
+  },
+
+  {
+    id: 'gcm',
+    mode: 'rep', modeLabel: 'Representational',
+    title: 'General Circulation Models',
+    period: 'c. 1950 — present',
+    hook: 'The atmosphere run as code; the planet made predictable',
+    cosmo: null, cosmoNote: null,
+    inscription: 'High-performance computing infrastructure; global weather station networks; satellite observation systems; international data-sharing protocols; the peer-reviewed publication as validation technology.',
+    interest: 'State science funding; Cold War meteorological competition; insurance and agricultural industries requiring climate prediction; the IPCC as political institutionalisation of model outputs.',
+    use: 'Climate prediction; agricultural planning; extreme weather forecasting; IPCC assessment reports; policy justification for emissions targets; reinsurance pricing.',
+    aesthetics: 'False-colour global temperature maps; the projected warming curve; atmospheric model outputs as public communication objects; the ensemble spread as visual argument about uncertainty; blue-to-red colour ramps as cultural shorthand for climate change.',
+    companion: 'The human as variable in a planetary system — measurable, parameterisable, ultimately responsible for a forcing function. The GCM companion model is notable for what it does not include: social structure, political economy, and colonial history are absent from the model\'s account of why the atmosphere is in its current state.',
+    reciprocal: null,
+    opacity: 50,
+    opNote: 'Mixed. Model code is in principle open and inspectable, but parameterisation choices, validation decisions, and ensemble construction require specialist expertise. The outputs circulate widely in simplified form; the assumptions are accessible only to practitioners.',
+    edge: null
+  },
+
+  // ── CONSTITUTIVE ──────────────────────────────────────────────
+
+  {
+    id: 'gdp',
+    mode: 'con', modeLabel: 'Constitutive',
+    title: 'Gross Domestic Product',
+    period: 'c. 1934 — present',
+    hook: 'The economy as a single number; World(B) produces what it claims to measure',
+    cosmo: 'covert',
+    cosmoNote: 'Encodes a cosmology of growth as the purpose of collective life — but presents itself as purely descriptive. The moral order is smuggled in through the neutrality of the statistic.',
+    inscription: 'National accounting infrastructure; international statistical standards (UN SNA); the quarterly press release; the financial terminal; IMF and World Bank reporting requirements.',
+    interest: 'WWII war production measurement (Kuznets, 1934); postwar Keynesian demand management; Cold War economic competition; international development lending conditionality; contemporary growth ideology across the political spectrum.',
+    use: 'Government fiscal and monetary policy; international development lending; electoral politics; business cycle analysis; international economic comparison; debt sustainability assessment.',
+    aesthetics: 'The percentage point as political object; the growth curve as newspaper front page; GDP-per-capita choropleth maps as global hierarchy; the quarterly announcement as media event; the recession as two consecutive negative numbers.',
+    companion: 'The economic subject — rational, utility-maximising, legible through market transactions. Unpaid labour, care work, ecological value, and subsistence economies are structurally absent. The companion model of the human implied by GDP is the individual as producer and consumer, nothing else.',
+    reciprocal: null,
+    opacity: 60,
+    opNote: 'Performs transparency — the headline number is maximally public — while concealing the accounting conventions, imputation methods, and political choices that produce it. Transparent to financial markets and governments; the methodology consulted only by specialists.',
+    edge: 'The clearest case of a constitutive model that presents itself as representational. Kuznets himself warned in 1934 that "the welfare of a nation can scarcely be inferred from a measurement of national income." The warning was ignored because the constitutive function was more useful than the representational one.'
+  },
+
+  {
+    id: 'colonial-census',
+    mode: 'con', modeLabel: 'Constitutive',
+    title: 'Colonial census & cadastral survey',
+    period: 'c. 1500 — 1900 (ongoing effects)',
+    hook: 'The map that makes the territory; classification as governance',
+    cosmo: 'covert',
+    cosmoNote: 'Encodes a cosmology of progress and legibility — the world is governable, improvable, and made real by being enumerated. Terra nullius is a cosmological claim, not just a legal one.',
+    inscription: 'Triangulation and surveying instruments; the printing press; the census form; the cadastral map; the colonial archive; naval cartography; the codex destruction as negative inscription.',
+    interest: 'Spanish, Portuguese, British, French, Dutch imperial expansion; land appropriation; resource extraction; population taxation and conscription; the legal production of terra nullius.',
+    use: 'Land appropriation; population classification; resource extraction; military navigation; production of taxable and recruitable subjects; epistemicide as governance technology.',
+    aesthetics: 'Terra nullius cartography; the blank space as violence; colonial maps as acts of possession; Indigenous cartographic knowledge absorbed into European atlases anonymously; the straight border as world model; the census table as racial typology.',
+    companion: 'Violently bifurcated. The colonial subject as manageable, classifiable, improvable — or as legally absent, as terra nullius implies. The coloniser as rational, cartographic, sovereign. The destruction of non-Western companion models — the burning of codices, the suppression of oral traditions — is part of the model\'s operation, not incidental to it.',
+    reciprocal: null,
+    opacity: 10,
+    opNote: 'Extreme opacity in two directions: colonial models opaque to the colonised; Indigenous models rendered invisible by suppression and deliberate destruction. The map is transparent to the administrator and illegitimate — in Glissant\'s sense — to those it dispossesses. Transparency here is an instrument of domination.',
+    edge: null
+  },
+
+  {
+    id: 'credit-score',
+    mode: 'con', modeLabel: 'Constitutive',
+    title: 'Credit scoring',
+    period: 'c. 1956 — present',
+    hook: 'The model whose output becomes its own input; Goodhart\'s Law as ontology',
+    cosmo: null, cosmoNote: null,
+    inscription: 'Mainframe computing; credit bureau data infrastructure; the FICO algorithm (1956); digital transaction records; machine learning risk models; real-time decisioning systems.',
+    interest: 'Consumer credit industry; mortgage markets; insurance pricing; landlord risk management; the financialisation of everyday life; algorithmic lending scale economies.',
+    use: 'Credit access; mortgage approval; insurance pricing; rental decisions; employment screening; in some jurisdictions, social access more broadly.',
+    aesthetics: 'The three-digit number as life-determining object; the credit report as bureaucratic self; the score visualised as dial or gauge; the "credit invisible" as negative aesthetic — the person who does not appear in the model.',
+    companion: 'The human as risk distribution — a probability of default, not a person. The model produces a version of the individual as statistical object that then determines their actual access to resources. Notably: the model cannot represent the human who has no credit history, producing structural exclusion through absence.',
+    reciprocal: null,
+    opacity: 25,
+    opNote: 'Systematically opaque — the specific weights and variables in commercial scoring models are proprietary. The output (the score) is visible to the subject; the mechanism is not. Regulatory "right to explanation" requirements have not produced genuine transparency.',
+    edge: 'The purest contemporary case of constitutive modelling: the score does not reflect creditworthiness, it produces it. A low score causes the inability to access credit that the score predicts. The model closes on itself.'
+  },
+
+  // ── PARTICIPATORY ─────────────────────────────────────────────
+
+  {
+    id: 'songlines',
+    mode: 'par', modeLabel: 'Participatory',
+    title: 'Aboriginal songlines',
+    period: 'Deep antiquity — present',
+    hook: 'The model that is the world; knowing as walking',
+    cosmo: 'explicit',
+    cosmoNote: 'Inseparable from cosmology — the Dreaming is simultaneously cosmogony, ethics, land-tenure system, and navigation technology. There is no distinction between the technical and the cosmological.',
+    inscription: 'The singing body; the walking body; oral transmission across generations; sand drawing; sacred object (churinga); ceremony as inscription technology. The absence of writing is a design feature that embeds knowledge in practice rather than text.',
+    interest: 'Land governance; food resource management; inter-group diplomacy; cultural continuity; resistance to colonial epistemicide — the songlines have survived partial colonial destruction precisely because their inscription technology is embodied rather than archival.',
+    use: 'Navigation across vast distances; land tenure and ownership; ecological management; ancestor communication; law and dispute resolution; cultural memory across tens of thousands of years.',
+    aesthetics: 'The landscape itself as aesthetic object — features are simultaneously geographic, narrative, and legal. Sand drawings as ephemeral cosmograms. The ceremony as total artwork. The body in motion as inscription. The most important aesthetic objects are not visible to outsiders — opacity is built into the aesthetic system.',
+    companion: 'The human as participant rather than observer — not modelled by the world model but constituted through engagement with it. The navigator who walks the songline is not representing country; they are becoming a knower through the practice. World model and companion model are not separable: you cannot stand outside the songline and understand it.',
+    reciprocal: 'The companion model of the human and the world model are mutually constitutive — there is no sequence, no priority. This is the clearest case of the reciprocal relationship being ontologically prior to either term.',
+    opacity: 80,
+    opNote: 'Deliberately and structurally opaque to outsiders — access governed by initiation, kinship, gender, and practice. The right to opacity (Glissant) is here not a political choice but an ontological condition: the knowledge cannot be separated from the relational context that makes it knowledge.',
+    edge: null
+  },
+
+  {
+    id: 'kalachakra',
+    mode: 'par', modeLabel: 'Participatory',
+    title: 'Kalachakra mandala',
+    period: 'c. 10th C — present',
+    hook: 'The cosmos instantiated; the model you enter, not consult',
+    cosmo: 'explicit',
+    cosmoNote: 'Fully and explicitly cosmological — the mandala is simultaneously a map of the cosmos, a model of the mind, and a ritual technology. The three are not separable.',
+    inscription: 'Sand; pigment; the consecrated ritual space; the trained body of the monk; initiatory transmission; the Kalachakra Tantra as textual substrate; the teacher-student lineage as inscription infrastructure.',
+    interest: 'Tibetan Buddhist religious authority; dynastic legitimation; the Dalai Lama\'s use of the initiation as a tool of transnational Tibetan solidarity and cultural survival.',
+    use: 'Ritual orientation; cosmological instruction; initiation into the Vajrayana path; collective merit-generation; political legitimation; cultural continuity under conditions of diaspora and suppression.',
+    aesthetics: 'The sand mandala as temporary total world — built over days, destroyed upon completion. The geometry of nested palaces and deities as cosmological argument. The destruction as teaching: the world model is impermanent. The body of the practitioner as the mandala\'s ultimate referent.',
+    companion: 'The human body as cosmos — the Kalachakra system maps the cosmos onto the body\'s channels, winds, and drops. The companion model is explicitly cosmological: the human is a microcosm that can realise the structure of the universe. The practitioner enters the mandala to become what the mandala models.',
+    reciprocal: 'The mandala and the body-cosmos are mutually constitutive — the ritual practice moves between them without priority. The companion model precedes the ritual in the textual tradition but is only realised through engagement with the world model.',
+    opacity: 85,
+    opNote: 'Structured opacity — initiatory transmission is the condition of access. The mandala is publicly visible during construction; its full meaning accessible only to initiates. The system explicitly distinguishes outer (cosmological), inner (physiological), and secret (yogic) levels of meaning, with access graduated by practice.',
+    edge: null
+  },
+
+  {
+    id: 'fortnite',
+    mode: 'par', modeLabel: 'Participatory',
+    title: 'Fortnite / the game engine world',
+    period: 'c. 2017 — present',
+    hook: 'The world you act in, not watch; the participatory mode in platform capitalism',
+    cosmo: 'covert',
+    cosmoNote: 'The storm that closes in, forcing confrontation, then resets — a built-in eschatology. The world ends and begins again. This is a cosmological structure presenting itself as game mechanics.',
+    inscription: 'Unreal Engine (Epic Games); GPU hardware; global server infrastructure; the controller and haptic feedback as inscription technologies; the skin as cosmetic world-model element; the live event as shared cosmological moment.',
+    interest: 'Epic Games platform economy; the colonisation of adolescent attention as financial resource; the metaverse land-grab; the game engine as cultural infrastructure for the next phase of the platform stack.',
+    use: 'Entertainment; social space for a generation without shared physical public space; advertising and brand integration; esports; testing ground for metaverse economic models.',
+    aesthetics: 'The island as bounded world with its own geography and history; the storm as cosmological event; the skin as identity technology; the collaborative build as shared world-making; the seasonal map change as collective historical experience.',
+    companion: 'The human as agent in a rule-governed environment — acquisitive, tactical, competitive, surviving. The companion model is individualist and Hobbesian: cooperation is instrumental, survival is the primary value, the world is zero-sum. This is the companion model implied by neoliberal economics, now experienced somatically by children.',
+    reciprocal: 'The companion model produced by Fortnite re-enters World(A): the player carries the world model\'s assumptions about agency, scarcity, and survival into their non-game life. At this point the participatory mode tips into the constitutive — the most politically significant thing the game engine does.',
+    opacity: 90,
+    opNote: 'The world model is maximally transparent at the level of rules and mechanics — everything the player needs to act is visible. It is maximally opaque at the level of its own assumptions: the companion model of the human it produces is invisible to the player precisely because it is experienced, not observed.',
+    edge: 'The most important entry for destabilising the assumption that the participatory mode is culturally specific to non-Western or ancient traditions. The game engine produces a participatory world model using the same substrate — Unreal Engine — as the digital twin and military simulation.'
+  },
+
+  // ── CONSTITUTIVE (continued) ──────────────────────────────────
+
+  {
+    id: 'destination-earth',
+    mode: 'con', modeLabel: 'Constitutive',
+    title: 'Destination Earth',
+    period: '2022 — present',
+    hook: 'The planet modelled as governable infrastructure; Earth twinned at EU scale',
+    cosmo: 'covert',
+    cosmoNote: 'Encodes a cosmology of planetary manageability — the implicit claim that the Earth is, in principle, fully knowable, optimisable, and governable through its digital replica. This is Laplacian determinism at planetary scale, with a photorealistic render. It presents itself as a technical instrument while making strong claims about what the world is for and who is entitled to model it.',
+    inscription: 'Copernicus satellite observation network; European Centre for Medium-Range Weather Forecasts (ECMWF) computing infrastructure; Destination Earth Data Lake; machine learning emulators; photorealistic rendering pipelines; the EU policy document as inscription technology.',
+    interest: 'European Commission climate and resilience policy; the EU\'s strategic interest in computational sovereignty — building a European world model infrastructure independent of US and Chinese platforms; Green Deal political legitimation; the need to make climate governance appear technically grounded and inevitable.',
+    use: 'Climate extreme prediction; energy system optimisation; digital replicas of ocean, atmosphere, and land system for policy scenario testing; "what if" simulations of climate intervention before commitment; real-time monitoring of planetary systems; governance of the prior — encoding which baseline conditions count as normal.',
+    aesthetics: 'The photorealistic spinning globe as policy object; false-colour atmospheric renders; the dashboard as democratic interface; synthetic satellite imagery indistinguishable from observation; the live data stream as performance of omniscience; blue-marble aesthetics repurposed as governance infrastructure.',
+    companion: 'Almost entirely absent — and that absence is the finding. Destination Earth models the planet at the level of physical and chemical systems. The human appears only as an emitter, a variable in forcing functions, or a recipient of optimised policy outputs. There is no model of human agency, social structure, political conflict, or historical causality. The companion model of the human implied is the administered subject of a technically optimal planet.',
+    reciprocal: null,
+    opacity: 20,
+    opNote: 'Performs transparency systematically — the entire project is publicly funded and publicly narrated as open science. But the attention-weighting assumptions, the choice of baseline periods, the parameterisation of what counts as an extreme event, and the data governance structures that determine whose observations feed the model are encoded in architecture and inaccessible to non-specialists. The digital twin performs transparency while constitutive opacity is structural.',
+    edge: 'The EU Digital Twin Ocean — one of ten "digital twins of the Earth" that Destination Earth is building — is the direct research object of this project\'s author. The genealogy runs: Laplace → General Circulation Models → digital twin → Destination Earth. The opacity increases at each step; the cosmological claim grows stronger as it becomes less visible.'
+  }
+
+];
+
+// ── RENDER ────────────────────────────────────────────────────────
+
+function buildEntry(d) {
+  const el = document.createElement('div');
+  el.className = `entry mode-${d.mode}`;
+  el.dataset.mode = d.mode;
+  el.dataset.cosmo = d.cosmo || '';
+  el.id = `e-${d.id}`;
+
+  const cosmoTag = d.cosmo
+    ? `<span class="cosmo-tag ${d.cosmo === 'covert' ? 'covert' : ''}">◎ ${d.cosmo === 'covert' ? 'covert cosmology' : 'cosmological'}</span>`
+    : '';
+
+  const reciprocalHTML = d.reciprocal
+    ? `<div class="reciprocal">${d.reciprocal}</div>`
+    : '';
+
+  const edgeHTML = d.edge
+    ? `<div class="edge">${d.edge}</div>`
+    : '';
+
+  const cosmoBodyHTML = `
+    <div class="cosmo-inner">
+      <div class="cosmo-orb ${d.cosmo ? 'lit' : ''}">◎</div>
+      <div class="param-text">
+        ${d.cosmo
+          ? d.cosmoNote
+          : '<em style="color:var(--dim)">No explicit or detectable cosmological register — or not yet examined for this.</em>'
+        }
+        ${edgeHTML}
+      </div>
+    </div>`;
+
+  el.innerHTML = `
+    <div class="entry-head">
+      <div class="entry-stripe"></div>
+      <div class="entry-summary">
+        <div class="entry-meta">
+          <span class="entry-period">${d.period}</span>
+          <span class="entry-mode-tag">${d.modeLabel}</span>
+          ${cosmoTag}
+        </div>
+        <div class="entry-title">${d.title}</div>
+        <div class="entry-hook">${d.hook}</div>
+      </div>
+      <div class="entry-toggle">
+        <span class="toggle-lbl">expand ↓</span>
+      </div>
+    </div>
+    <div class="entry-body">
+      <div class="param-row">
+        <div class="param-cell">
+          <div class="param-label">Technologies of inscription</div>
+          <div class="param-text">${d.inscription}</div>
+        </div>
+        <div class="param-cell">
+          <div class="param-label">Political / economic interest</div>
+          <div class="param-text">${d.interest}</div>
+        </div>
+      </div>
+      <div class="param-row">
+        <div class="param-cell">
+          <div class="param-label">Use case &amp; application</div>
+          <div class="param-text">${d.use}</div>
+        </div>
+        <div class="param-cell">
+          <div class="param-label">Aesthetics</div>
+          <div class="param-text">${d.aesthetics}</div>
+        </div>
+      </div>
+      <div class="param-row single">
+        <div class="param-cell">
+          <div class="param-label">Companion model of the human</div>
+          <div class="param-text">${d.companion}</div>
+          ${reciprocalHTML}
+        </div>
+      </div>
+      <div class="param-row">
+        <div class="param-cell">
+          <div class="param-label">Transparency / opacity — legible to whom?</div>
+          <div class="param-text">${d.opNote}</div>
+          <div class="op-wrap">
+            <span class="op-lbl">Opaque</span>
+            <div class="op-track"><div class="op-fill" style="width:${d.opacity}%"></div></div>
+            <span class="op-lbl">Transparent</span>
+          </div>
+        </div>
+        <div class="param-cell">
+          <div class="param-label">Cosmological register</div>
+          ${cosmoBodyHTML}
+        </div>
+      </div>
+    </div>`;
+
+  el.addEventListener('click', ev => {
+    if (ev.target.closest('.entry-body')) return;
+    const open = el.classList.toggle('open');
+    el.querySelector('.toggle-lbl').textContent = open ? 'collapse ↑' : 'expand ↓';
+  });
+
+  return el;
+}
+
+const container = document.getElementById('entries');
+DATA.forEach(d => container.appendChild(buildEntry(d)));
+
+// ── FILTER ────────────────────────────────────────────────────────
+
+let activeMode = 'all';
+let cosmoOnly  = false;
+
+function recount() {
+  const visible = DATA.filter(d => {
+    const mOk = activeMode === 'all' || d.mode === activeMode;
+    const cOk = !cosmoOnly || d.cosmo;
+    return mOk && cOk;
+  }).length;
+  document.getElementById('entry-count').textContent =
+    `Showing ${visible} of ${DATA.length} entries`;
+}
+
+function applyFilter() {
+  DATA.forEach(d => {
+    const el = document.getElementById(`e-${d.id}`);
+    const mOk = activeMode === 'all' || d.mode === activeMode;
+    const cOk = !cosmoOnly || d.cosmo;
+    if (mOk && cOk) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+      el.classList.remove('open');
+      el.querySelector('.toggle-lbl').textContent = 'expand ↓';
+    }
+  });
+  recount();
+}
+
+document.getElementById('mode-filters').addEventListener('click', ev => {
+  const btn = ev.target.closest('.mode-btn');
+  if (!btn) return;
+  activeMode = btn.dataset.mode;
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.remove('on');
+  });
+  btn.classList.add('on');
+  applyFilter();
+});
+
+document.getElementById('cosmo-btn').addEventListener('click', () => {
+  cosmoOnly = !cosmoOnly;
+  document.getElementById('cosmo-btn').classList.toggle('on', cosmoOnly);
+  applyFilter();
+});
+
+recount();
+</script>
+</body>
+</html>
